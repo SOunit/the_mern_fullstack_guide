@@ -6,6 +6,7 @@ import {
   VALIDATOR_MINLENGTH,
   VALIDATOR_REQUIRE,
 } from "../../shared/util/validators";
+import "./PlaceForm.css";
 
 const DUMMY_PLACES = [
   {
@@ -33,9 +34,7 @@ const DUMMY_PLACES = [
 const UpdatePlace = () => {
   const placeId = useParams().placeId;
 
-  const identifiedPlace = DUMMY_PLACES.find((p) => {
-    p.id === placeId;
-  });
+  const identifiedPlace = DUMMY_PLACES.find((p) => p.id === placeId);
 
   if (!identifiedPlace) {
     return (
@@ -46,10 +45,10 @@ const UpdatePlace = () => {
   }
 
   return (
-    <form>
+    <form className="place-form">
       <Input
         title="title"
-        element="title"
+        element="input"
         type="text"
         label="Title"
         validators={[VALIDATOR_REQUIRE()]}
@@ -60,7 +59,6 @@ const UpdatePlace = () => {
       />
       <Input
         title="description"
-        element="description"
         type="text"
         label="Description"
         validators={[VALIDATOR_MINLENGTH(5)]}
