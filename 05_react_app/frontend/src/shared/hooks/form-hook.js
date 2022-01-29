@@ -4,8 +4,6 @@ const INPUT_CHANGE = "INPUT_CHANGE";
 const SET_DATA = "SET_DATA";
 
 const formReducer = (state, action) => {
-  console.log(action.type);
-  console.log(action);
   switch (action.type) {
     case INPUT_CHANGE: {
       let formIsValid = true;
@@ -45,8 +43,6 @@ export const useForm = (initialInputs, initialFormValidity) => {
     inputs: initialInputs,
     isValid: initialFormValidity,
   });
-
-  console.log("useForm", formState);
 
   // no dependency means run only first time rendering
   const inputHandler = useCallback((id, value, isValid) => {
