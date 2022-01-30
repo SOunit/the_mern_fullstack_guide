@@ -7,6 +7,6 @@ const app = express();
 
 // app.use(bodyParser);
 
-app.use(placesRoutes);
+app.use("/api/places", placesRoutes);
 
 app.listen(5000);
