@@ -3,32 +3,8 @@ const { v4: uuid } = require("uuid");
 const { validationResult } = require("express-validator");
 const getCoordsForAddress = require("../util/location");
 const Place = require("../models/place");
-const place = require("../models/place");
-
-let DUMMY_PLACES = [
-  {
-    id: "p1",
-    title: "Empire State Building",
-    description: "One of the most famous sky",
-    location: {
-      lat: 40,
-      lng: -73,
-    },
-    address: "dummy address",
-    creator: "u1",
-  },
-  {
-    id: "p2",
-    title: "Empire State Building",
-    description: "One of the most famous sky",
-    location: {
-      lat: 40,
-      lng: -73,
-    },
-    address: "dummy address",
-    creator: "u1",
-  },
-];
+const User = require("../models/user");
+const mongoose = require("mongoose");
 
 const getPlaceById = async (req, res, next) => {
   const placeId = req.params.pid;
@@ -111,14 +87,46 @@ const createPlace = async (req, res, next) => {
     creator,
   });
 
+  let user;
   try {
-    await createdPlace.save();
+    user = await User.findById(creator);
   } catch (err) {
-    const error = new HttpError("Creating place failed. Please try again", 500);
+    const error = new HttpError(
+      "Creating place failed while fetching user. Please try again.",
+      500
+    );
     return next(error);
   }
 
-  res.status(201).json({ place: createdPlace });
+  if (!user) {
+    const error = new HttpError("Could not find user for provided id.", 404);
+    return next(error);
+  }
+
+  console.log("user", user);
+
+  try {
+    // create session and transaction
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+
+    await createdPlace.save({ session: sess });
+    // mongoose document push
+    // connect 2 document using id
+    user.places.push(createdPlace);
+    await user.save({ session: sess });
+
+    // save only if all tran has no error
+    await sess.commitTransaction();
+  } catch (err) {
+    const error = new HttpError(
+      "Creating place failed in creating place transaction. Please try again",
+      500
+    );
+    return next(error);
+  }
+
+  res.status(201).json({ place: createdPlace.toObject({ getters: true }) });
 };
 
 const updatePlace = async (req, res, next) => {
