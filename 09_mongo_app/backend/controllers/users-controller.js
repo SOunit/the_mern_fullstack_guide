@@ -2,15 +2,6 @@ const { validationResult } = require("express-validator");
 const HttpError = require("../models/http-error");
 const User = require("../models/user");
 
-const DUMMY_USERS = [
-  {
-    id: "u1",
-    name: "Jack Pearson",
-    email: "test@test.com",
-    password: "password",
-  },
-];
-
 const getUsers = async (req, res, next) => {
   let users;
   try {
@@ -35,8 +26,6 @@ const signup = async (req, res, next) => {
   }
 
   const { name, email, password } = req.body;
-
-  console.log(email);
 
   let existingUser;
   try {
@@ -75,15 +64,6 @@ const signup = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
-  const identifiedUser = DUMMY_USERS.find((u) => u.email === email);
-  if (!identifiedUser || identifiedUser.password !== password) {
-    return next(
-      new HttpError(
-        "Could not identify user, credentials seem to be wrong",
-        401
-      )
-    );
-  }
 
   let existingUser;
   try {
