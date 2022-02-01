@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import Button from "../../shared/components/FormElements/Button";
 import Input from "../../shared/components/FormElements/Input";
 import Card from "../../shared/components/UIElements/Card";
+import LoadingSpinncer from "../../shared/components/UIElements/LoadingSpinner";
 import { useForm } from "../../shared/hooks/form-hook";
 import {
   VALIDATOR_EMAIL,
@@ -14,6 +15,8 @@ import "./Auth.css";
 const Auth = () => {
   const auth = useContext(AuthContext);
   const [isLoginMode, setIsLoginMode] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
   const [formState, inputHandler, setFormData] = useForm(
     {
       email: { value: "", isValid: false },
@@ -47,6 +50,8 @@ const Auth = () => {
     if (isLoginMode) {
     } else {
       try {
+        setIsLoading(true);
+
         const response = await fetch("http://localhost:5000/api/users/signup", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -59,16 +64,19 @@ const Auth = () => {
 
         const responseData = await response.json();
         console.log(responseData);
+        setIsLoading(false);
+        auth.login();
       } catch (err) {
         console.log(err);
+        setIsLoading(false);
+        setError(err.message || "Something went wrong. Please try again.");
       }
     }
-
-    auth.login();
   };
 
   return (
     <Card className="authentication">
+      {isLoading && <LoadingSpinncer asOverlay />}
       <h2>Login Required</h2>
       <hr />
       <form onSubmit={authSubmitHandler}>
