@@ -4,13 +4,13 @@ export const useHttpClient = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
 
-  const activeHttpRequest = useRef([]);
+  const activeHttpRequests = useRef([]);
 
   const sendRequest = useCallback(
     async (url, method = "GET", body = null, headers = {}) => {
       setIsLoading(true);
       const httpAbortCtrl = new AbortController();
-      activeHttpRequest.current.push(httpAbortCtrl);
+      activeHttpRequests.current.push(httpAbortCtrl);
 
       try {
         const response = await fetch(url, {
@@ -22,15 +22,21 @@ export const useHttpClient = () => {
 
         const responseData = await response.json();
 
+        activeHttpRequests.current = activeHttpRequests.current.filter(
+          (reqCtrl) => reqCtrl !== httpAbortCtrl
+        );
+
         if (!response.ok) {
           throw new Error(responseData.message);
         }
 
+        setIsLoading(false);
         return responseData;
       } catch (err) {
         setError(err.message);
+        setIsLoading(false);
+        throw err;
       }
-      setIsLoading(false);
     },
     []
   );
@@ -43,7 +49,7 @@ export const useHttpClient = () => {
     // clean up function if return a function
     // component did unmount
     return () => {
-      activeHttpRequest.current.forEach((abortCthl) => abortCthl.abort());
+      activeHttpRequests.current.forEach((abortCthl) => abortCthl.abort());
     };
   }, []);
 
