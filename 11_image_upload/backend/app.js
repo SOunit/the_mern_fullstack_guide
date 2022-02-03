@@ -1,4 +1,5 @@
 const fs = require("fs");
+const path = require("path");
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -13,6 +14,8 @@ const app = express();
 
 // parse json data
 app.use(bodyParser.json());
+
+app.use("/uploads/images", express.static(path.join("uploads", "images")));
 
 // add header data to avoid cors error in frontend
 app.use((req, res, next) => {
