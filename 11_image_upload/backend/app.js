@@ -1,3 +1,5 @@
+const fs = require("fs");
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -32,12 +34,17 @@ app.use((req, res, next) => {
 });
 
 app.use((error, req, res, next) => {
+  if (req.file) {
+    fs.unlink(req.file.path, (err) => {
+      console.log(err);
+    });
+  }
+
   // check if response is already send or not by previous middleware
   if (res.headerSent) {
     return next(error);
   }
 
-  // something went wrong = 500
   res.status(error.code || 500);
   res.json({ message: error.message || "An unknown error occured." });
 });
