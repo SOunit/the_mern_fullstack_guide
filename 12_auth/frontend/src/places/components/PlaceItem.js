@@ -26,7 +26,7 @@ const PlaceItem = (props) => {
     setShowConfirmModal(false);
 
     try {
-      const responseData = await sendRequest(
+      await sendRequest(
         `http://localhost:5000/api/places/${props.id}`,
         "DELETE"
       );
