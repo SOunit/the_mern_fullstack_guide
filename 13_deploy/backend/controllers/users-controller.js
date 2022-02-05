@@ -3,7 +3,6 @@ const HttpError = require("../models/http-error");
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const keys = require("../env");
 
 const getUsers = async (req, res, next) => {
   let users;
@@ -78,7 +77,7 @@ const signup = async (req, res, next) => {
   try {
     token = jwt.sign(
       { userId: createdUser.id, email: createdUser.email },
-      keys.process.env.JWT_SECRET_KEY,
+      process.env.JWT_SECRET_KEY,
       // to avoid faked token used
       { expiresIn: "1h" }
     );
@@ -140,7 +139,7 @@ const login = async (req, res, next) => {
   try {
     token = jwt.sign(
       { userId: existingUser.id, email: existingUser.email },
-      keys.process.env.JWT_SECRET_KEY,
+      process.env.JWT_SECRET_KEY,
       // to avoid faked token used
       { expiresIn: "1h" }
     );
