@@ -78,7 +78,7 @@ const signup = async (req, res, next) => {
   try {
     token = jwt.sign(
       { userId: createdUser.id, email: createdUser.email },
-      keys.jwt_secret_key,
+      keys.process.env.JWT_SECRET_KEY,
       // to avoid faked token used
       { expiresIn: "1h" }
     );
@@ -140,7 +140,7 @@ const login = async (req, res, next) => {
   try {
     token = jwt.sign(
       { userId: existingUser.id, email: existingUser.email },
-      keys.jwt_secret_key,
+      keys.process.env.JWT_SECRET_KEY,
       // to avoid faked token used
       { expiresIn: "1h" }
     );

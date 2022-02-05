@@ -1,6 +1,5 @@
 const HttpError = require("../models/http-error");
 const jwt = require("jsonwebtoken");
-const { jwt_secret_key } = require("../env");
 
 module.exports = (req, res, next) => {
   if (req.method === "OPTIONS") {
@@ -15,7 +14,7 @@ module.exports = (req, res, next) => {
     }
 
     // verify throws error if failed
-    const decodedToken = jwt.verify(token, jwt_secret_key);
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY);
     req.userData = { userId: decodedToken.userId };
     next();
   } catch (err) {
