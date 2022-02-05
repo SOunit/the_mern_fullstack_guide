@@ -1,9 +1,10 @@
 import { createContext } from "react";
 
 export const AuthContext = createContext({
-  // placeholder
+  // placeholder, for auto competion
   isLoggedIn: false,
   userId: null,
+  token: null,
   login: () => {},
   logout: () => {},
 });

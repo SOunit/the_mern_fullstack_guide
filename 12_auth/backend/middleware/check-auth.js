@@ -3,6 +3,10 @@ const jwt = require("jsonwebtoken");
 const { jwt_secret_key } = require("../env");
 
 module.exports = (req, res, next) => {
+  if (req.method === "OPTIONS") {
+    return next();
+  }
+
   try {
     // authorization = "Bearer TOKEN"
     const token = req.headers.authorization.split(" ")[1];
