@@ -94,13 +94,14 @@ const PlaceItem = (props) => {
             <Button inverse onClick={openMapHandler}>
               VIEW ON MAP
             </Button>
-            <Button to={`/places/${props.id}`}>EDIT</Button>
-            {auth.userId === props.creatorId && <p>EDIT</p>}
-
-            <Button danger onClick={showDeleteWarningHandler}>
-              DELETE
-            </Button>
-            {auth.userId === props.creatorId && <p>DELETE</p>}
+            {auth.userId === props.creatorId && (
+              <Button to={`/places/${props.id}`}>EDIT</Button>
+            )}
+            {auth.userId === props.creatorId && (
+              <Button danger onClick={showDeleteWarningHandler}>
+                DELETE
+              </Button>
+            )}
           </div>
         </Card>
       </li>
