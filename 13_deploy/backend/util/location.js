@@ -1,33 +1,16 @@
-const axios = require('axios');
+const getCoordsForAddress = (address) => {
+  // you can setup google location api if you want
+  // https://www.udemy.com/course/react-nodejs-express-mongodb-the-mern-fullstack-guide/learn/lecture/16833284#questions
 
-const HttpError = require('../models/http-error');
-
-const API_KEY = 'AIzaSyDgLmMpKCzveJf1_yuA0fUzzhy0WRChvZA';
-
-async function getCoordsForAddress(address) {
-  // return {
-  //   lat: 40.7484474,
-  //   lng: -73.9871516
-  // };
-  const response = await axios.get(
-    `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-      address
-    )}&key=${API_KEY}`
-  );
-
-  const data = response.data;
-
-  if (!data || data.status === 'ZERO_RESULTS') {
-    const error = new HttpError(
-      'Could not find location for the specified address.',
-      422
-    );
-    throw error;
-  }
-
-  const coordinates = data.results[0].geometry.location;
-
-  return coordinates;
-}
+  // dummy http request returns coordinate object
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve({
+        lat: 40,
+        lng: -73,
+      });
+    }, 1000);
+  });
+};
 
 module.exports = getCoordsForAddress;
